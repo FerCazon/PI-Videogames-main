@@ -76,7 +76,7 @@ dispatch(getByName(searchString));
     if (!filters.genre) return games;
     return games.filter((game) => {
       if (game.genres) {
-        return game.genres.some((genre) => genre.name === filters.genre);
+        return game.genres.some((genre) => genre.name === filters.genre || genre === filters.genre);
       }
       return false;
     });
