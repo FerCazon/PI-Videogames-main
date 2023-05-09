@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const routes = require('./routes/index.js');
 const cors = require('cors');
+const axios = require('axios');
 
 require('./db.js');
 
@@ -29,6 +30,18 @@ server.use((req, res, next) => {
 
 server.use('/', routes);
 
+function fetchAndSave() {
+  setTimeout(() => {
+    axios.get('http://localhost:3001/fetchandsave')
+      .then((response) => {
+        console.log('Data fetched and saved successfully:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching and saving data:', error);
+      });
+  }, 5000);
+}
+
 // Error catching endware.
 server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   const status = err.status || 500;
@@ -36,5 +49,7 @@ server.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
   console.error(err);
   res.status(status).send(message);
 });
+
+fetchAndSave();
 
 module.exports = server;

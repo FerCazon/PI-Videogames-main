@@ -3,3 +3,12 @@
     background-repeat: no-repeat;
     background-size: cover;
   } */
+
+  .create {
+    color: #ffffff;
+  }
+  
+  .create input,
+  .create select {
+    color: #000000;
+  }

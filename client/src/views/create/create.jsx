@@ -85,7 +85,7 @@ function Create() {
 
   return (
     <div className="create">
-      <p>Estas en el create</p>
+      <p>Game Form Creation</p>
       <form onSubmit={handleSubmit}>
         <InputField label="Nombre" name="name" value={input.name} onChange={handleChange} />
         <InputField label="Descripcion" name="description" value={input.description} onChange={handleChange} />
