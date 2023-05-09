@@ -65,23 +65,6 @@ dispatch(getByName(searchString));
     // TODO: Update the state with the new games array
   }
   
-
-  //filtro sobre el estado
-  // const [filtered, setFiltered] = useState(allGames);
-  // const [searchString, setSearchString] = useState('');
-
-  // function handleChange(e) {
-  //   e.preventDefault();
-  //   setSearchString(e.target.value);
-  // }
-
-  // function handleSubmit(e) {
-  //   e.preventDefault();
-  //   const filtered = allGames.filter((game) =>
-  //     game.name.toLowerCase().includes(searchString.toLowerCase())
-  //   );
-  //   setFiltered(filtered);
-  // }
   function handleFilterChange(e) {
     const { name, value } = e.target;
     setFilters({
@@ -89,34 +72,43 @@ dispatch(getByName(searchString));
       [name]: value,
     });
   }
-  function applyFiltersAndSort(games) {
-    return games
-      .filter((game) => {
-        if (filters.genre && game.genres) {
-          return game.genres.some((genre) => genre.name === filters.genre);
-        }
-        return true;
-      })
-      .filter((game) => {
-        if (filters.source === 'api') {
-          return !game.isFromDb;
-        } else if (filters.source === 'db') {
-          return game.isFromDb;
-        }
-        return true;
-      })
-      .sort((a, b) => {
-        const field = filters.sortBy === 'alphabetical' ? 'name' : 'rating';
-        const order = filters.order === 'asc' ? 1 : -1;
-        if (a[field] < b[field]) {
-          return -1 * order;
-        }
-        if (a[field] > b[field]) {
-          return 1 * order;
-        }
-        return 0;
-      });
+  function filterByGenre(games) {
+    if (!filters.genre) return games;
+    return games.filter((game) => {
+      if (game.genres) {
+        return game.genres.some((genre) => genre.name === filters.genre);
+      }
+      return false;
+    });
   }
+  
+  function filterBySource(games) {
+    if (!filters.source) return games;
+    return games.filter((game) => {
+      if (filters.source === 'api') {
+        return !game.isFromDb;
+      } else if (filters.source === 'db') {
+        return game.isFromDb;
+      }
+      return true;
+    });
+  }
+  
+  function sortGames(games) {
+    if (!filters.sortBy) return games;
+    const field = filters.sortBy === 'alphabetical' ? 'name' : 'rating';
+    const order = filters.order === 'asc' ? 1 : -1;
+    return games.sort((a, b) => {
+      if (a[field] < b[field]) {
+        return -1 * order;
+      }
+      if (a[field] > b[field]) {
+        return 1 * order;
+      }
+      return 0;
+    });
+  }
+  
 
   useEffect(() => {
     dispatch(getGames());
@@ -126,7 +118,9 @@ dispatch(getByName(searchString));
     dispatch(getGenres());
   }, [dispatch]);
 
-  const filteredAndSortedGames = applyFiltersAndSort(allGames);
+  const filteredAndSortedGames = sortGames(filterBySource(filterByGenre(allGames)));
+  console.log('Filtered and sorted games:', filteredAndSortedGames);
+
 
   return (
     <div className="home">
