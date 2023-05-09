@@ -5,9 +5,10 @@ import  "./create.css"
 import InputField from './components/inputfield';
 import SelectField from './components/selectfield';
 import { validate } from './components/validate';
+import { useHistory } from 'react-router-dom';
 
 function Create() {
-  
+  const history = useHistory()
   const [input, setInput] = useState({
     name: '',
     description: '',
@@ -54,9 +55,8 @@ function Create() {
   }
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-  
-    // Convert platforms to an array
+    e.preventDefault();  
+    // por cuestiones de compatibilidad me convierto el platforms en array
     const updatedInput = {
       ...input,
       platforms: input.platforms.split(',').map((platform) => platform.trim()),
@@ -75,6 +75,8 @@ function Create() {
         },
       });
       console.log(response.data);
+      alert('Character created successfully!');
+      history.push('/home');
     } catch (error) {
       console.error('Error:', error);
     }

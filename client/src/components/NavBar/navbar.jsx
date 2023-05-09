@@ -4,15 +4,9 @@ import './navbar.css';
 
 function Navbar({ handleChange, handleSubmit, handleSoundButtonClick }) {
   return (
-    <div className="navbar">
-      <div className="navbar-buttons">
-        <Link to="/home">
-          <button className="navbar-button">Home</button>
-        </Link>
-        <Link to="/create">
-          <button className="navbar-button">Create Game</button>
-        </Link>
-      </div>
+    <nav className="navMenu">
+      <Link to="/home">Home</Link>
+      <Link to="/create">Create Game</Link>
       <div className="search-box">
         <form onChange={handleChange}>
           <input placeholder="Busqueda" type="search" />
@@ -27,7 +21,8 @@ function Navbar({ handleChange, handleSubmit, handleSoundButtonClick }) {
           <i className="gg-loadbar-sound"></i>
         </button>
       </div>
-    </div>
+      <div className="dot"></div>
+    </nav>
   );
 }
 

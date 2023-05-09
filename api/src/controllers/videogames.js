@@ -26,12 +26,9 @@ const createGameDB = async (
   console.log("New game created:", newGame.toJSON()); // Ver el juego que se creo
 
   // Encontrar o crear generos y asociarlos
-  for (const genreName of genres) {
-    // Fetch genre by its name
+  for (const genreName of genres) {  
     const genreData = await Genre.findOne({ where: { name: genreName } });
-
-    if (genreData) {
-      // If the genre exists, find or create it by its name
+    if (genreData) {  
       const [genre, _] = await Genre.findOrCreate({
         where: { name: genreName },
       });

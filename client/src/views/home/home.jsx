@@ -61,8 +61,7 @@ dispatch(getByName(searchString));
         };
       }
       return game;
-    });
-    // TODO: Update the state with the new games array
+    });    
   }
   
   function handleFilterChange(e) {
@@ -81,17 +80,25 @@ dispatch(getByName(searchString));
       return false;
     });
   }
+  function normalizeGames(games) {
+    return games.map((game) => {
+      if (game.hasOwnProperty('createdAt')) {
+        return {
+          ...game,
+          source: 'db',
+        };
+      } else {
+        return {
+          ...game,
+          source: 'api',
+        };
+      }
+    });
+  }
   
   function filterBySource(games) {
     if (!filters.source) return games;
-    return games.filter((game) => {
-      if (filters.source === 'api') {
-        return !game.isFromDb;
-      } else if (filters.source === 'db') {
-        return game.isFromDb;
-      }
-      return true;
-    });
+    return games.filter((game) => game.source === filters.source);
   }
   
   function sortGames(games) {
@@ -118,7 +125,7 @@ dispatch(getByName(searchString));
     dispatch(getGenres());
   }, [dispatch]);
 
-  const filteredAndSortedGames = sortGames(filterBySource(filterByGenre(allGames)));
+  const filteredAndSortedGames = sortGames(filterBySource(filterByGenre(normalizeGames(allGames))));
   console.log('Filtered and sorted games:', filteredAndSortedGames);
 
 

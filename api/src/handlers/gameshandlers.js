@@ -71,9 +71,9 @@ const createGameHandler = async (req, res) => {
   const {name, description, platforms, image, releaseDate, rating, genres} = req.body;
   try {
     const newGame = await createGameDB(name, description, platforms, image, releaseDate, rating, genres);
-    const associatedGenres = await newGame.getGenres(); // Fetch associated genres
-    const response = newGame.toJSON(); // Convert instance to plain object
-    response.genres = associatedGenres; // Add genres to the response object
+    const associatedGenres = await newGame.getGenres(); 
+    const response = newGame.toJSON(); 
+    response.genres = associatedGenres; 
     res.status(200).json(response);
   } catch (error) {
     res.status(400).json({error: error.message});
@@ -82,7 +82,6 @@ const createGameHandler = async (req, res) => {
 
 const getPlatformsHandler = async (req, res) => {
   const { gameId } = req.params;
-
   try {
     const response = await getPlatformsByGameId(gameId);
     res.status(200).json(response);

@@ -30,7 +30,6 @@ export function getGames(page = 1) {
   };
 }
 
-
 export function getByName(name) {
   return async function (dispatch) {
     const response = await axios.get(

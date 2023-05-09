@@ -18,14 +18,12 @@ const getGenresByGameId = async (gameId) => {
   const fetchAndSaveGenres = async () => {
     try {
       const response = await axios.get(`https://api.rawg.io/api/genres?key=${API_KEY}`); 
-      const genres = response.data.results; // Assign the 'results' array to the genres variable
+      const genres = response.data.results; 
     
-      for (const genre of genres) {
-        // Check if the genre exists in the database
+      for (const genre of genres) {        
         const existingGenre = await Genre.findOne({ where: { id: genre.id } });
     
-        if (!existingGenre) {
-          // If the genre doesn't exist, create and save it
+        if (!existingGenre) {         
           await Genre.create({
             id: genre.id,
             name: genre.name,
