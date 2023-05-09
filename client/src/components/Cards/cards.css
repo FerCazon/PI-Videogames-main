@@ -1,0 +1,9 @@
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(300px, 1fr));
+  grid-gap: 10px;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #383a3f;
+}

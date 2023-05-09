@@ -1,0 +1,31 @@
+.card-container {
+  background-color: #1f2124;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  max-width: 100%;
+  padding: 10px;
+  text-align: center;
+  color: white;
+  transition: transform 0.25s ease-out;
+  overflow: hidden;
+}
+
+.card-container img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin-bottom: 10px;
+  max-height: 300px;
+}
+
+.card-container h2 {
+  font-size: 25px;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.card-container p {
+  margin: 10px 0;
+  font-size: 14px;
+  line-height: 1.2;
+}
