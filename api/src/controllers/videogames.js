@@ -25,15 +25,23 @@ const createGameDB = async (
 
   console.log("New game created:", newGame.toJSON()); // Ver el juego que se creo
 
- // Encontrar o crear generos y asociarlos
+  // Encontrar o crear generos y asociarlos
   for (const genreName of genres) {
-    const [genre, _] = await Genre.findOrCreate({
-      where: { name: genreName },
-    });
+    // Fetch genre by its name
+    const genreData = await Genre.findOne({ where: { name: genreName } });
 
-    console.log("Found or created genre:", genre.toJSON()); // por las dudas si se hizo
+    if (genreData) {
+      // If the genre exists, find or create it by its name
+      const [genre, _] = await Genre.findOrCreate({
+        where: { name: genreName },
+      });
 
-    await newGame.addGenre(genre);
+      console.log("Found or created genre:", genre.toJSON());
+
+      await newGame.addGenre(genre);
+    } else {
+      console.log(`Genre not found: ${genreName}`);
+    }
   }
 
   const associatedGenres = await newGame.getGenres(); // buscar generos asociados
@@ -41,6 +49,7 @@ const createGameDB = async (
 
   return newGame;
 };
+
 // aqui es donde me traigo los juegitos de la api
 const getGamesById = async (id, source) => {
   let game;

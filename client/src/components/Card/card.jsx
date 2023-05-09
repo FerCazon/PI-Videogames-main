@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from "react";
 import "./card.css";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom";
 
 function Card({ games, updateGameGenres }) {
   const [genres, setGenres] = useState(games.genres || []);
 
   useEffect(() => {
-    fetch(`http://localhost:3001/genres/${games.id || games.gameId}?created=${games.created || false}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data && data.length > 0) {
-          setGenres(data);
-          updateGameGenres(games.id || games.gameId, data);
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    const id = games.id || games.gameId;
+  
+    if (!games.genres && id) {
+      const url = `http://localhost:3001/games/${id}`;
+  
+      fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+          if (data && data.genres && data.genres.length > 0) {
+            setGenres(data.genres);
+            updateGameGenres(id, data.genres);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
   }, [games.id, games.gameId, games.genres, updateGameGenres]);
   
 
-  const genreNames = genres.map((genre) => genre.name).join(', ');
+  const genreNames = genres.map((genre) => genre.name || genre).join(", ");
 
   return (
     <Link to={`/home/${games.id || games.gameId}`}>

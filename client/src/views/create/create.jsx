@@ -56,10 +56,16 @@ function Create() {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    // convertir plataformas al array
+    // Convert platforms to an array
     const updatedInput = {
       ...input,
       platforms: input.platforms.split(',').map((platform) => platform.trim()),
+      genres: input.genres
+        .map((genreId) => {
+          const genreObj = fetchedGenres.find((genre) => genre.id.toString() === genreId);
+          return genreObj ? genreObj.name : null;
+        })
+        .filter((genreName) => genreName !== null),
     };
   
     try {
@@ -69,12 +75,11 @@ function Create() {
         },
       });
       console.log(response.data);
-      
     } catch (error) {
       console.error('Error:', error);
-      
     }
   };
+  
 
   return (
     <div className="create">
