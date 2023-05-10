@@ -1,13 +1,15 @@
 .card-container {
-  background-color: #1f2124;
+  background: rgba(1, 1, 15, 0.5);
+  background: linear-gradient(301deg, rgba(2, 2, 22, 0.8) 0%, rgba(2,0,36,0.8) 100%, rgba(0,212,255,0.8) 100%);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
-  border-radius: 5px;
+  border-radius: 15px;
   max-width: 100%;
   padding: 10px;
   text-align: center;
   color: white;
   transition: transform 0.25s ease-out;
   overflow: hidden;
+  border: 5px solid rgb(49, 8, 93);
 }
 
 .card-container img {
@@ -19,7 +21,7 @@
 }
 
 .card-container h2 {
-  font-size: 25px;
+  font-size: 35px;
   margin-bottom: 10px;
   line-height: 1.2;
 }
