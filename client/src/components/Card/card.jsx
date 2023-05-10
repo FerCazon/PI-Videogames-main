@@ -17,7 +17,9 @@ function Card({ games }) {
 
   return (
     <div className="card-container">
-      <button onClick={handleDelete}>Delete</button>
+      {games.createdAt && (
+        <button onClick={handleDelete}>Delete</button>
+      )}
       <Link to={`/home/${games.id || games.gameId}`}>
         <h2>{games.name}</h2>
         <img src={games.image} alt={games.name} />
@@ -27,5 +29,6 @@ function Card({ games }) {
     </div>
   );
 }
+
 
 export default Card;

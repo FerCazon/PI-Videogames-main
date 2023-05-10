@@ -1,4 +1,10 @@
-
+.detail{
+  background-image: url('../../assets/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
+}
 
 .game-detail {
     background-color: #f6f4e6; 

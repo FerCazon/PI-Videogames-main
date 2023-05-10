@@ -49,7 +49,7 @@ function Detail() {
   }
 
   return (
-    <div>
+    <div className="detail">
       {game ? (
         <>
         <div id="arrowAnim" onClick={handleBackClick}>
@@ -84,6 +84,7 @@ function Detail() {
             )}
           </p>
           <p>Genres: {genres.map((genre) => genre.name || genre).join(", ")}</p>
+          <button on onClick={()=> history.push(`/update/${game.gameId || game.id}`)}>Update</button>
         </div>
         </>
       ) : (

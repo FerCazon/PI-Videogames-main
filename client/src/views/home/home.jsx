@@ -52,6 +52,7 @@ dispatch(getByName(searchString));
       dispatch(getGames(currentPage - 1));
     }
   }
+
   function updateGameGenres(gameId, genres) {
     const updatedGames = allGames.map((game) => {
       if (game.id === gameId || game.gameId === gameId) {

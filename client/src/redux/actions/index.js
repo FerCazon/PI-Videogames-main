@@ -7,10 +7,8 @@ export const DELETE_GAME = "DELETE_GAME";
 
 // aca va la action que me va a traer los juegos desde el servidor
 export function getGames(page = 1,force = false) {
-  return async function (dispatch, getState) {
-    if (!force && getState().allGames.length > 0) {
-      return; // saltea el fetch si force no es true y si hay cosas cacheadas
-    }
+  return async function (dispatch) {
+    
     const response = await axios.get(
       `http://localhost:3001/games?page=${page}`
     );

@@ -1,8 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './navbar.css';
+import SoundButton from '../Sound/SounbButton';  // import SoundButton component
+import '../Sound/SoundButton.css';
+import "./navbar.css"
 
-function Navbar({ handleChange, handleSubmit, handleSoundButtonClick }) {
+function Navbar({ handleChange, handleSubmit }) {
   return (
     <nav className="navMenu">
       <Link to="/home">Home</Link>
@@ -16,11 +18,8 @@ function Navbar({ handleChange, handleSubmit, handleSoundButtonClick }) {
         </form>
       </div>
       
-      <div className="sound-button">
-        <button onClick={handleSoundButtonClick}>
-          <i className="gg-loadbar-sound"></i>
-        </button>
-      </div>
+      <SoundButton />
+      
       <div className="dot"></div>
     </nav>
   );

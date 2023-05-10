@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import './SoundButton.css';
 import sound from '../../assets/backgroundmp3.mp3';
 
 function SoundButton() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const audio = new Audio(sound);
+  const audioRef = useRef(new Audio(sound));
+
+  useEffect(() => {
+    return () => {
+      audioRef.current.pause();
+      audioRef.current = null;
+    }
+  }, []);
 
   const handleSoundToggle = () => {
     if (isPlaying) {
-      audio.pause();
+      audioRef.current.pause();
     } else {
-      audio.play();
+      audioRef.current.play();
     }
     setIsPlaying(!isPlaying);
   };
 
   return (
     <div className="sound-button" onClick={handleSoundToggle}>
-      <div className="gg-loadbar-sound"></div>
+      <i className="gg-loadbar-sound"></i>
     </div>
   );
 }

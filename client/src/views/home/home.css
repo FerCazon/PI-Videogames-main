@@ -1,12 +1,15 @@
 .home {
-  padding: 20px;
-  background-image: linear-gradient(to left top, #2d3138, #212938, #162037, #0a1835, #020d33);
+  background-image: url('../../assets/background.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  position: relative;
 }
 
 .home-title {
   text-align: center;
   color: white;
-  margin-top: 20px;  
+  margin-top: -110px;  
   font-family: 'Lucida Bright', serif;
   font-size: 4rem;
   position: absolute;
