@@ -1,4 +1,12 @@
-const { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId, deleteGameDB, updateGameDB } = require("../controllers/videogames");
+const {
+  createGameDB,
+  getGamesById,
+  getAllGames,
+  getGamesByName,
+  getPlatformsByGameId,
+  deleteGameDB,
+  updateGameDB,
+} = require("../controllers/videogames");
 
 const getGamesHandler = async (req, res) => {
   const { name, page, sortBy, order, origin } = req.query;
@@ -12,11 +20,11 @@ const getGamesHandler = async (req, res) => {
         games = await getGamesByName(name);
       }
     } else {
-      const pageNumber = parseInt(page, 10) || 1; // paginado
+      const pageNumber = parseInt(page, 10) || 1; // paginado tienen este formato las api "https://api.rawg.io/api/platforms?key=da1da225bb66462e931e534453765860&page=2",
       games = await getAllGames(pageNumber);
     }
 
-    // origen
+    // origen para ver si es de la api o db
     if (origin) {
       games = games.filter((game) => {
         if (origin === "API") {
@@ -27,10 +35,13 @@ const getGamesHandler = async (req, res) => {
       });
     }
 
-    // Sort de rating
+    // Sort de rating para despues retornarme un ligero orden entre los juegos
     if (sortBy === "rating" && (order === "ASC" || order === "DESC")) {
       games = sortGamesByRating(games, order);
-    } else if (sortBy === "alphabetical" && (order === "ASC" || order === "DESC")) {
+    } else if (
+      sortBy === "alphabetical" &&
+      (order === "ASC" || order === "DESC")
+    ) {
       games.sort((a, b) => {
         if (order === "ASC") {
           return a.name.localeCompare(b.name);
@@ -46,11 +57,10 @@ const getGamesHandler = async (req, res) => {
   }
 };
 
-
 const getDetailHandler = async (req, res) => {
   const { id } = req.params;
-  const source = isNaN(id) ? "bdd" : "api";
-console.log(id,source);
+  const source = isNaN(id) ? "bdd" : "api"; //aca puedo saber si es que estoy en la api o no
+  console.log(id, source);
   try {
     const response = await getGamesById(id, source);
 
@@ -68,18 +78,27 @@ console.log(id,source);
 };
 
 const createGameHandler = async (req, res) => {
-  const {name, description, platforms, image, releaseDate, rating, genres} = req.body;
+  const { name, description, platforms, image, releaseDate, rating, genres } =
+    req.body;
   try {
-    const newGame = await createGameDB(name, description, platforms, image, releaseDate, rating, genres);
-    const associatedGenres = await newGame.getGenres(); 
-    const response = newGame.toJSON(); 
-    response.genres = associatedGenres; 
-    res.status(201).json(response);
+    const newGame = await createGameDB(
+      name,
+      description,
+      platforms,
+      image,
+      releaseDate,
+      rating,
+      genres
+    );
+    const associatedGenres = await newGame.getGenres();
+    const response = newGame.toJSON();
+    response.genres = associatedGenres;
+    res.status(201).json(response); // creado con exito
   } catch (error) {
-    if (error.message === 'A game with this name already exists') {
-      res.status(409).json({error: error.message});
+    if (error.message === "A game with this name already exists") {
+      res.status(409).json({ error: error.message }); // conflicto
     } else {
-      res.status(500).json({error: error.message});
+      res.status(500).json({ error: error.message });
     }
   }
 };
@@ -98,7 +117,7 @@ const deleteGameHandler = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const response = await deleteGameDB(id);
+    const response = await deleteGameDB(id); // si encuentro lo destruyo
     res.status(200).json(response);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -110,17 +129,24 @@ const updateGameHandler = async (req, res) => {
   const updatedData = req.body;
   try {
     const updatedGame = await updateGameDB(id, updatedData);
-    const associatedGenres = await updatedGame.getGenres(); 
-    const response = updatedGame.toJSON(); 
-    response.genres = associatedGenres; 
+    const associatedGenres = await updatedGame.getGenres();
+    const response = updatedGame.toJSON();
+    response.genres = associatedGenres;
     res.status(200).json(response);
   } catch (error) {
     if (error.message.startsWith("Game with id")) {
-      res.status(404).json({error: error.message});
+      res.status(404).json({ error: error.message });
     } else {
-      res.status(500).json({error: error.message});
+      res.status(500).json({ error: error.message });
     }
   }
 };
 
-module.exports = {getDetailHandler,getGamesHandler, createGameHandler, getPlatformsHandler, deleteGameHandler, updateGameHandler }
+module.exports = {
+  getDetailHandler,
+  getGamesHandler,
+  createGameHandler,
+  getPlatformsHandler,
+  deleteGameHandler,
+  updateGameHandler,
+};

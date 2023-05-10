@@ -5,11 +5,10 @@ import "./detail.css";
 function Detail() {
   const { id } = useParams();
   const [game, setGame] = useState(null);
-  const history = useHistory()
+  const history = useHistory();
 
   const [genres, setGenres] = useState([]);
   const [platforms, setPlatforms] = useState([]);
-
 
   const handleBackClick = () => {
     history.goBack();
@@ -52,40 +51,66 @@ function Detail() {
     <div className="detail">
       {game ? (
         <>
-        <div id="arrowAnim" onClick={handleBackClick}>
-          <div class="arrowSliding">
-            <div class="arrow"></div>
+          <div
+            id="arrowAnim"
+            onClick={handleBackClick}
+          >
+            <div class="arrowSliding">
+              <div class="arrow"></div>
+            </div>
+            <div class="arrowSliding delay1">
+              <div class="arrow"></div>
+            </div>
+            <div class="arrowSliding delay2">
+              <div class="arrow"></div>
+            </div>
+            <div class="arrowSliding delay3">
+              <div class="arrow"></div>
+            </div>
           </div>
-          <div class="arrowSliding delay1">
-            <div class="arrow"></div>
-          </div>
-          <div class="arrowSliding delay2">
-            <div class="arrow"></div>
-          </div>
-          <div class="arrowSliding delay3">
-            <div class="arrow"></div>
-          </div>
-        </div>
-        <div className="game-detail">
-          <h2>{game.name}</h2>
-          <img
-            src={game.background_image || game.image}
-            alt={game.name}
-          />
-          <p>ID: {game.gameId || game.id}</p>
-          <p>
-            Platforms:{" "}
-            {platforms.map((platform) => platform.name || platform).join(", ")}
-          </p>
-          <p>
-            Description:{" "}
-            {game.description && (
-              <div dangerouslySetInnerHTML={{ __html: game.description }}></div>
+          <div className="game-detail">
+            <h2>{game.name}</h2>
+            <img
+              src={game.background_image || game.image}
+              alt={game.name}
+            />
+            <p>ID: {game.gameId || game.id}</p>
+            <p>
+              Release Date:{" "}
+              {game.released
+                ? formatDate(game.released)
+                : game.releaseDate
+                ? formatDate(game.releaseDate)
+                : "N/A"}
+            </p>
+
+            <p>
+              Platforms:{" "}
+              {platforms
+                .map((platform) => platform.name || platform)
+                .join(", ")}
+            </p>
+            <p>
+              Description:{" "}
+              {game.description && (
+                <div
+                  dangerouslySetInnerHTML={{ __html: game.description }}
+                ></div>
+              )}
+            </p>
+            <p>
+              Genres: {genres.map((genre) => genre.name || genre).join(", ")}
+            </p>
+            {game.createdAt && (
+              <button
+                onClick={() =>
+                  history.push(`/update/${game.gameId || game.id}`)
+                }
+              >
+                Update
+              </button>
             )}
-          </p>
-          <p>Genres: {genres.map((genre) => genre.name || genre).join(", ")}</p>
-          <button on onClick={()=> history.push(`/update/${game.gameId || game.id}`)}>Update</button>
-        </div>
+          </div>
         </>
       ) : (
         <p>Loading...</p>

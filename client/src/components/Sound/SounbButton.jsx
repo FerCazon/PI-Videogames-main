@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect } from 'react';
-import './SoundButton.css';
-import sound from '../../assets/backgroundmp3.mp3';
+import React, { useState, useRef, useEffect } from "react";
+import "./SoundButton.css";
+import sound from "../../assets/backgroundmp3.mp3";
 
 function SoundButton() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -10,7 +10,7 @@ function SoundButton() {
     return () => {
       audioRef.current.pause();
       audioRef.current = null;
-    }
+    };
   }, []);
 
   const handleSoundToggle = () => {
@@ -23,7 +23,10 @@ function SoundButton() {
   };
 
   return (
-    <div className="sound-button" onClick={handleSoundToggle}>
+    <div
+      className="sound-button"
+      onClick={handleSoundToggle}
+    >
       <i className="gg-loadbar-sound"></i>
     </div>
   );

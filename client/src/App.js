@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Route, BrowserRouter, Switch } from "react-router-dom";
 import "./App.css";
 import Home from "./views/home/home";
@@ -6,7 +5,6 @@ import Detail from './views/detail/detail';
 import Create from './views/create/create';
 import Landing from './views/landing/landing';
 import Update from "./views/update/update";
-
 
 
 function App() { 

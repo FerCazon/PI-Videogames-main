@@ -133,8 +133,7 @@ dispatch(getByName(searchString));
   return (
     <div className="home">
       <h2 className="home-title">VideoGames Realm</h2>
-      <form>
-      <label htmlFor="genre">Genre: </label>
+      <form>      
       <select name="genre" id="genre" value={filters.genre} onChange={handleFilterChange}>
   <option value="">Genre</option>
   {genres.map((genre) => (
@@ -142,23 +141,17 @@ dispatch(getByName(searchString));
       {genre.name}
     </option>
         ))}
-      </select>
-
-      <label htmlFor="source">Source: </label>
+      </select>      
       <select name="source" id="source" value={filters.source} onChange={handleFilterChange}>
         <option value="">Source</option>
         <option value="api">API</option>
         <option value="db">Database</option>
-      </select>
-
-      <label htmlFor="sortBy">Sort by: </label>
+      </select>      
       <select name="sortBy" id="sortBy" value={filters.sortBy} onChange={handleFilterChange}>
         <option value="">Alph/Rating</option>
         <option value="alphabetical">Alphabetical</option>
         <option value="rating">Rating</option>
-      </select>
-
-      <label htmlFor="order">Order: </label>
+      </select>      
       <select name="order" id="order" value={filters.order} onChange={handleFilterChange}>
         <option value="asc">Ascending</option>
         <option value="desc">Descending</option>

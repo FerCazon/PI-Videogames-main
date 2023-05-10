@@ -7,7 +7,11 @@ function Cards({ allGames, updateGameGenres }) {
   return (
     <div className="card-list">
       {gamesList?.map((games) => (
-        <Card key={games.id || games.gameId} games={games} updateGameGenres={updateGameGenres} />
+        <Card
+          key={games.id || games.gameId}
+          games={games}
+          updateGameGenres={updateGameGenres}
+        />
       ))}
     </div>
   );

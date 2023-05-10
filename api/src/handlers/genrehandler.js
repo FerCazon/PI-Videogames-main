@@ -1,4 +1,8 @@
-const { getGenresByGameId, getAllGenres, fetchAndSaveGenres } = require("../controllers/genrecontroller");
+const {
+  getGenresByGameId,
+  getAllGenres,
+  fetchAndSaveGenres,
+} = require("../controllers/genrecontroller");
 
 const getGenresHandler = async (req, res) => {
   const { gameId } = req.params;
@@ -37,6 +41,8 @@ const fetchAndSaveGenresHandler = async (req, res) => {
   }
 };
 
-
-
-module.exports = { getGenresHandler, getAllGenresHandler, fetchAndSaveGenresHandler};
+module.exports = {
+  getGenresHandler,
+  getAllGenresHandler,
+  fetchAndSaveGenresHandler,
+};

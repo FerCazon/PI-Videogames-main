@@ -1,35 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { useHistory, useParams } from 'react-router-dom';
-import InputField from './components/inputfield';
-import SelectField from './components/selectfield';
-import { validate } from './components/validate';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useHistory, useParams } from "react-router-dom";
+import InputField from "./components/inputfield";
+import SelectField from "./components/selectfield";
+import { validate } from "./components/validate";
+import "./update.css";
 
 function Update() {
   const history = useHistory();
   const { id } = useParams();
   const [input, setInput] = useState({
-    name: '',
-    description: '',
-    platforms: '',
-    image: '',
-    releaseDate: '',
-    rating: '',
+    name: "",
+    description: "",
+    platforms: "",
+    image: "",
+    releaseDate: "",
+    rating: "",
     genres: [],
   });
 
   const [error, setError] = useState({
-    name: '',
-    description: '',
-    platforms: 'required',
-    image: '',
-    releaseDate: '',
-    rating: '',
+    name: "",
+    description: "",
+    platforms: "required",
+    image: "",
+    releaseDate: "",
+    rating: "",
   });
 
   const [fetchedGenres, setFetchedGenres] = useState([]);
-
- 
 
   useEffect(() => {
     fetch(`http://localhost:3001/games/${id}`)
@@ -38,13 +37,13 @@ function Update() {
         setInput({
           name: data.name,
           description: data.description,
-          platforms: data.platforms.join(', '),
+          platforms: data.platforms.join(", "),
           image: data.background_image || data.image,
           releaseDate: data.released,
           rating: data.rating,
-          genres: data.genres.map(genre => genre.id.toString()),
+          genres: data.genres.map((genre) => genre.id.toString()),
         });
-        fetchGenres(); 
+        fetchGenres();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -57,10 +56,10 @@ function Update() {
 
   async function fetchGenres() {
     try {
-      const response = await axios.get('http://localhost:3001/genres');
+      const response = await axios.get("http://localhost:3001/genres");
       setFetchedGenres(response.data);
     } catch (error) {
-      console.error('Error fetching genres:', error);
+      console.error("Error fetching genres:", error);
     }
   }
 
@@ -73,58 +72,104 @@ function Update() {
     validate(input, setError);
   }
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!input.name || !input.description || !input.platforms || !input.image || !input.releaseDate || !input.rating || !input.genres.length) {
-      alert('All fields must be completed.');
+    if (
+      !input.name ||
+      !input.description ||
+      !input.platforms ||
+      !input.image ||
+      !input.releaseDate ||
+      !input.rating ||
+      !input.genres.length
+    ) {
+      alert("All fields must be completed.");
       return;
     }
 
     const updatedInput = {
       ...input,
-      platforms: input.platforms.split(',').map((platform) => platform.trim()),
+      platforms: input.platforms.split(",").map((platform) => platform.trim()),
       genres: input.genres
         .map((genreId) => {
-          const genreObj = fetchedGenres.find((genre) => genre.id.toString() === genreId);
+          const genreObj = fetchedGenres.find(
+            (genre) => genre.id.toString() === genreId
+          );
           return genreObj ? genreObj.name : null;
         })
         .filter((genreName) => genreName !== null),
     };
-console.log("id:",id)
+    console.log("id:", id);
     try {
-      const response = await axios.put(`http://localhost:3001/games/${id}`, updatedInput, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+      const response = await axios.put(
+        `http://localhost:3001/games/${id}`,
+        updatedInput,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       console.log(response.data);
-      alert('Game updated successfully!');
-      history.push('/home');
+      alert("Game updated successfully!");
+      history.push("/home");
     } catch (error) {
-      console.error('Error:', error);
+      console.error("Error:", error);
       if (error.response && error.response.status === 409) {
-        alert('Game with this name already exists');
+        alert("Game with this name already exists");
       } else {
-        alert('An unknown error occurred');
+        alert("An unknown error occurred");
       }
     }
-  }
+  };
   return (
     <div className="update">
       <p>Update Game Form</p>
       <form onSubmit={handleSubmit}>
-        <InputField label="Nombre" name="name" value={input.name} onChange={handleChange} />
-        <InputField label="Descripcion" name="description" value={input.description} onChange={handleChange} />
-        <InputField label="Plataforma" name="platforms" value={input.platforms} onChange={handleChange} />
-        <InputField label="Imagen" name="image" value={input.image} onChange={handleChange} />
-        <InputField label="Fecha de lanzamiento" name="releaseDate" value={input.releaseDate} onChange={handleChange} />
-        <InputField label="Rating" name="rating" value={input.rating} onChange={handleChange} />
+        <InputField
+          label="Nombre"
+          name="name"
+          value={input.name}
+          onChange={handleChange}
+        />
+        <InputField
+          label="Descripcion"
+          name="description"
+          value={input.description}
+          onChange={handleChange}
+        />
+        <InputField
+          label="Plataforma"
+          name="platforms"
+          value={input.platforms}
+          onChange={handleChange}
+        />
+        <InputField
+          label="Imagen"
+          name="image"
+          value={input.image}
+          onChange={handleChange}
+        />
+        <InputField
+          label="Fecha de lanzamiento"
+          name="releaseDate"
+          value={input.releaseDate}
+          onChange={handleChange}
+        />
+        <InputField
+          label="Rating"
+          name="rating"
+          value={input.rating}
+          onChange={handleChange}
+        />
         <SelectField
           label="Géneros"
           name="genres"
           value={input.genres}
-          options={fetchedGenres.map((genre) => ({ value: genre.id, label: genre.name }))}
+          options={fetchedGenres.map((genre) => ({
+            value: genre.id,
+            label: genre.name,
+          }))}
           onChange={(e) => {
             const selectedOptions = Array.from(
               e.target.selectedOptions,
@@ -134,7 +179,7 @@ console.log("id:",id)
           }}
         />
 
-        {error.name ? null : <button type='submit'>Update</button>}
+        {error.name ? null : <button type="submit">Update</button>}
       </form>
     </div>
   );

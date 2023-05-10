@@ -24,66 +24,75 @@ const createGameDB = async (
       rating,
     });
 
-  console.log("New game created:", newGame.toJSON()); // Ver el juego que se creo
+    console.log("New game created:", newGame.toJSON()); // Ver el juego que se creo
 
-  // Encontrar o crear generos y asociarlos
-  for (const genreName of genres) {  
-    const genreData = await Genre.findOne({ where: { name: genreName } });
-    if (genreData) {  
-      const [genre, _] = await Genre.findOrCreate({
-        where: { name: genreName },
-      });
+    // Encontrar o crear generos y asociarlos
+    for (const genreName of genres) {
+      const genreData = await Genre.findOne({ where: { name: genreName } });
+      if (genreData) {
+        const [genre, _] = await Genre.findOrCreate({
+          ///// uso el operador _ porque el valor es un booleano, porque si es que tiene una coincidencia de genero
+          where: { name: genreName },
+        });
 
-      console.log("Found or created genre:", genre.toJSON());
+        console.log("Found or created genre:", genre.toJSON());
 
-      await newGame.addGenre(genre);
+        await newGame.addGenre(genre);
+      } else {
+        console.log(`Genre not found: ${genreName}`);
+      }
+    }
+
+    const associatedGenres = await newGame.getGenres(); // buscar generos asociados
+    console.log(
+      "Associated genres:",
+      associatedGenres.map((g) => g.toJSON())
+    );
+
+    return newGame;
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      throw new Error("A game with this name already exists");
     } else {
-      console.log(`Genre not found: ${genreName}`);
+      throw err;
     }
   }
-
-  const associatedGenres = await newGame.getGenres(); // buscar generos asociados
-  console.log("Associated genres:", associatedGenres.map(g => g.toJSON())); 
-
-  return newGame;
-} catch (err) {
-  if (err.name === 'SequelizeUniqueConstraintError') {
-    throw new Error('A game with this name already exists');
-  } else {
-    throw err;
-  }
-}
 };
 
-
-// aqui es donde me traigo los juegitos de la api
+// aqui es donde me traigo los juegitos de la api o de la base de datos
 const getGamesById = async (id, source) => {
   let game;
-  console.log(source, id)
+  console.log(source, id);
   if (source === "api") {
-    const apiResponse = (await axios.get(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)).data;
-    game = infoclean([apiResponse])[0];
-   // agrego generos y plataformas al objeto
+    //esta parte viene de la magia del handler
+    const apiResponse = (
+      await axios.get(`https://api.rawg.io/api/games/${id}?key=${API_KEY}`)
+    ).data;
+    game = infoclean([apiResponse])[0]; /// yo cuando hago la peticion recibo un objeto, no un array, entonces uso el 0 para indicarle que necesito el indice
+    // agrego generos y plataformas al objeto
     game.genres = apiResponse.genres.map((genre) => genre.name);
-    game.platforms = apiResponse.platforms.map((platform) => platform.platform.name);
+    game.platforms = apiResponse.platforms.map(
+      (platform) => platform.platform.name
+    );
   } else {
     game = await Videogame.findByPk(id, {
-      include: Genre // meto generos a la respuesta
+      include: Genre, // meto generos a la respuesta
     });
-    console.log("pepe",game)
+    console.log("pepe", game);
     // unifico las propiedades "nombres"
     game = {
       ...game.toJSON(),
       genres: game.genres.map((genre) => genre.name),
-       platforms: game.platforms.map((platform) => platform.platform || platform)
+      platforms: game.platforms.map(
+        (platform) => platform.platform || platform
+      ),
     };
   }
-  console.log("pepo",game)
+  console.log("pepo", game);
   return game;
 };
 
-
-// aqui es donde reseteo la info despues de traerme las cosas
+// aqui es donde limpio la info para que me traiga las cosas que yo necesito
 const infoclean = (array) => {
   return array.map((element) => {
     return {
@@ -94,18 +103,16 @@ const infoclean = (array) => {
       image: element.background_image,
       released: element.released,
       rating: element.rating,
-      created: false
-    }
-  })
-}
+      created: false, ///// importantisimo
+    };
+  });
+};
 // aqui es donde me traigo todos los juegitos de la api
 const getAllGames = async (page = 1) => {
   const gamesDB = await Videogame.findAll();
 
   const infoApi = (
-    await axios.get(
-      `https://api.rawg.io/api/games?key=${API_KEY}&page=${page}`
-    )
+    await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&page=${page}`)
   ).data;
 
   const gamesApi = infoclean(infoApi.results);
@@ -114,15 +121,21 @@ const getAllGames = async (page = 1) => {
 };
 //aca mergeo los juegos de la api, con los de la base de datos usando axios para api y findall para db
 const getGamesByName = async (name) => {
-  if (typeof name !== 'string') {
+  if (typeof name !== "string") {
     throw new Error("Invalid name parameter");
   }
 
-  const infoApi = (await axios.get(`https://api.rawg.io/api/games?key=${API_KEY}&search=${name}`)).data;
+  const infoApi = (
+    await axios.get(
+      `https://api.rawg.io/api/games?key=${API_KEY}&search=${name}`
+    )
+  ).data;
 
-  const gamesApi = infoclean(infoApi.results);
+  const gamesApi = infoclean(infoApi.results); // llamo al info para que me de lo que quiero como quiero
 
-  const gameFiltered = gamesApi.filter(games => games.name.toLowerCase() === name.toLowerCase());
+  const gameFiltered = gamesApi.filter(
+    (games) => games.name.toLowerCase() === name.toLowerCase()
+  );
 
   const gameDb = await Videogame.findAll({ where: { name: name } });
 
@@ -130,7 +143,9 @@ const getGamesByName = async (name) => {
 };
 
 const getPlatformsByGameId = async (gameId) => {
-  const response = await axios.get(`https://api.rawg.io/api/games/${gameId}?key=${API_KEY}`);
+  const response = await axios.get(
+    `https://api.rawg.io/api/games/${gameId}?key=${API_KEY}`
+  );
   const data = response.data;
   return data.platforms;
 };
@@ -138,7 +153,7 @@ const getPlatformsByGameId = async (gameId) => {
 const deleteGameDB = async (id) => {
   try {
     const game = await Videogame.findOne({ where: { id } });
-    if (!game) throw new Error('Game not found');
+    if (!game) throw new Error("Game not found");
 
     await game.destroy();
 
@@ -149,6 +164,7 @@ const deleteGameDB = async (id) => {
 };
 
 const updateGameDB = async (id, newData) => {
+  /// put || actualizo el juego con New data, me traigo el id y lo actualizo por los parametros. tengo que considerar el genero como siempre
   try {
     const game = await Videogame.findByPk(id);
 
@@ -160,7 +176,7 @@ const updateGameDB = async (id, newData) => {
 
     // si me traes generos, dale un update
     if (newData.genres && Array.isArray(newData.genres)) {
-      // Remove all genres and add the new ones
+      // reemplazo los generos removiendolos y poniendolos
       const currentGenres = await game.getGenres();
       await game.removeGenres(currentGenres);
 
@@ -169,7 +185,7 @@ const updateGameDB = async (id, newData) => {
         if (genreData) {
           await game.addGenre(genreData);
         } else {
-          console.log(`Genre not found: ${genreName}`);
+          console.log(`Genre not found: ${genreName}`); // lo hacia por el tema de que no encontraba el formato correcto en la base de datos
         }
       }
     }
@@ -183,5 +199,12 @@ const updateGameDB = async (id, newData) => {
   }
 };
 
-
-module.exports = { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId, deleteGameDB, updateGameDB};
+module.exports = {
+  createGameDB,
+  getGamesById,
+  getAllGames,
+  getGamesByName,
+  getPlatformsByGameId,
+  deleteGameDB,
+  updateGameDB,
+};
