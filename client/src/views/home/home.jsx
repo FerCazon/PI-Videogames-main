@@ -116,13 +116,13 @@ dispatch(getByName(searchString));
     });
   }
   
-
+///////////// los false los uso para poder decirle al redux que no fuerce una nueva busqueda
   useEffect(() => {
-    dispatch(getGames());
+    dispatch(getGames(1, false)); 
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getGenres());
+    dispatch(getGenres(false));  
   }, [dispatch]);
 
   const filteredAndSortedGames = sortGames(filterBySource(filterByGenre(normalizeGames(allGames))));

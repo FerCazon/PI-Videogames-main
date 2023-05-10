@@ -14,14 +14,15 @@ const createGameDB = async (
   rating,
   genres
 ) => {
-  const newGame = await Videogame.create({
-    name,
-    description,
-    platforms,
-    image,
-    releaseDate,
-    rating,
-  });
+  try {
+    const newGame = await Videogame.create({
+      name,
+      description,
+      platforms,
+      image,
+      releaseDate,
+      rating,
+    });
 
   console.log("New game created:", newGame.toJSON()); // Ver el juego que se creo
 
@@ -45,7 +46,15 @@ const createGameDB = async (
   console.log("Associated genres:", associatedGenres.map(g => g.toJSON())); 
 
   return newGame;
+} catch (err) {
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    throw new Error('A game with this name already exists');
+  } else {
+    throw err;
+  }
+}
 };
+
 
 // aqui es donde me traigo los juegitos de la api
 const getGamesById = async (id, source) => {
@@ -126,4 +135,53 @@ const getPlatformsByGameId = async (gameId) => {
   return data.platforms;
 };
 
-module.exports = { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId };
+const deleteGameDB = async (id) => {
+  try {
+    const game = await Videogame.findOne({ where: { id } });
+    if (!game) throw new Error('Game not found');
+
+    await game.destroy();
+
+    return { message: `Game with id ${id} deleted` };
+  } catch (err) {
+    throw err;
+  }
+};
+
+const updateGameDB = async (id, newData) => {
+  try {
+    const game = await Videogame.findByPk(id);
+
+    if (!game) {
+      throw new Error(`Game with id ${id} not found`);
+    }
+
+    await game.update(newData);
+
+    // si me traes generos, dale un update
+    if (newData.genres && Array.isArray(newData.genres)) {
+      // Remove all genres and add the new ones
+      const currentGenres = await game.getGenres();
+      await game.removeGenres(currentGenres);
+
+      for (const genreName of newData.genres) {
+        const genreData = await Genre.findOne({ where: { name: genreName } });
+        if (genreData) {
+          await game.addGenre(genreData);
+        } else {
+          console.log(`Genre not found: ${genreName}`);
+        }
+      }
+    }
+
+    // traeme el juego de la base de dato para asociarle el genero
+    const updatedGame = await Videogame.findByPk(id, { include: Genre });
+
+    return updatedGame;
+  } catch (err) {
+    throw err;
+  }
+};
+
+
+module.exports = { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId, deleteGameDB, updateGameDB};

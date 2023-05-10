@@ -54,3 +54,7 @@ button:hover {
   justify-content: center;
   margin-bottom: 20px;
 }
+
+a:visited {
+  color: inherit;
+}

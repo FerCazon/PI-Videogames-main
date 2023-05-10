@@ -37,4 +37,6 @@ const fetchAndSaveGenresHandler = async (req, res) => {
   }
 };
 
+
+
 module.exports = { getGenresHandler, getAllGenresHandler, fetchAndSaveGenresHandler};

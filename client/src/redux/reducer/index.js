@@ -1,4 +1,4 @@
-import { GET_GAMES, GET_BY_NAME, GET_GENRES } from "../actions"
+import { GET_GAMES, GET_BY_NAME, GET_GENRES, DELETE_GAME } from "../actions"
 let initialState = {allGames: [], allgamesCopy: [], genres:[]}
 // este es el reducer que me va a inicializar el state
 function rootReducer(state = initialState, action) {
@@ -21,6 +21,12 @@ function rootReducer(state = initialState, action) {
         ...state,
         genres: action.payload,
       };
+      case DELETE_GAME:
+            return {
+                ...state,
+                allGames: state.allGames.filter(game => game.id !== action.payload),
+                allgamesCopy: state.allgamesCopy.filter(game => game.id !== action.payload)
+            }      
         default:
             return state
     }

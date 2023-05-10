@@ -1,4 +1,4 @@
-const { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId } = require("../controllers/videogames");
+const { createGameDB, getGamesById, getAllGames, getGamesByName, getPlatformsByGameId, deleteGameDB, updateGameDB } = require("../controllers/videogames");
 
 const getGamesHandler = async (req, res) => {
   const { name, page, sortBy, order, origin } = req.query;
@@ -74,9 +74,13 @@ const createGameHandler = async (req, res) => {
     const associatedGenres = await newGame.getGenres(); 
     const response = newGame.toJSON(); 
     response.genres = associatedGenres; 
-    res.status(200).json(response);
+    res.status(201).json(response);
   } catch (error) {
-    res.status(400).json({error: error.message});
+    if (error.message === 'A game with this name already exists') {
+      res.status(409).json({error: error.message});
+    } else {
+      res.status(500).json({error: error.message});
+    }
   }
 };
 
@@ -90,4 +94,33 @@ const getPlatformsHandler = async (req, res) => {
   }
 };
 
-module.exports = {getDetailHandler,getGamesHandler, createGameHandler, getPlatformsHandler }
+const deleteGameHandler = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await deleteGameDB(id);
+    res.status(200).json(response);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+const updateGameHandler = async (req, res) => {
+  const { id } = req.params;
+  const updatedData = req.body;
+  try {
+    const updatedGame = await updateGameDB(id, updatedData);
+    const associatedGenres = await updatedGame.getGenres(); 
+    const response = updatedGame.toJSON(); 
+    response.genres = associatedGenres; 
+    res.status(200).json(response);
+  } catch (error) {
+    if (error.message.startsWith("Game with id")) {
+      res.status(404).json({error: error.message});
+    } else {
+      res.status(500).json({error: error.message});
+    }
+  }
+};
+
+module.exports = {getDetailHandler,getGamesHandler, createGameHandler, getPlatformsHandler, deleteGameHandler, updateGameHandler }

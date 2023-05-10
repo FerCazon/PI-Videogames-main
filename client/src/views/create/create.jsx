@@ -56,6 +56,10 @@ function Create() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();  
+    if (!input.name || !input.description || !input.platforms || !input.image || !input.releaseDate || !input.rating || !input.genres.length) {
+      alert('All fields must be completed.');
+      return;
+    }
     // por cuestiones de compatibilidad me convierto el platforms en array
     const updatedInput = {
       ...input,
@@ -79,9 +83,13 @@ function Create() {
       history.push('/home');
     } catch (error) {
       console.error('Error:', error);
+      if (error.response && error.response.status === 409) {
+        alert('Game with this name already exists');
+      } else {
+        alert('An unknown error occurred');
+      }
     }
-  };
-  
+  }
 
   return (
     <div className="create">

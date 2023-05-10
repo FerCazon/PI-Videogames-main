@@ -1,3 +1,5 @@
+
+
 .game-detail {
     background-color: #f6f4e6; 
     color: #272727; 
@@ -22,4 +24,107 @@
   .game-detail p {
     margin-bottom: 10px;
     line-height: 1.6;
+  }
+
+  #arrowAnim {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  
+  }
+  
+  .arrow {
+    width: 30px;
+    height: 30px;
+    border: 15px solid;
+    border-color: white transparent transparent white;
+    transform: rotate(-45deg);
+  }
+  
+  
+  .arrowSliding {
+    position: absolute;
+    -webkit-animation: slide 4s linear infinite; 
+            animation: slide 4s linear infinite;
+  }
+  
+  .delay1 {
+    -webkit-animation-delay: 1s; 
+      animation-delay: 1s;
+  }
+  .delay2 {
+    -webkit-animation-delay: 2s; 
+      animation-delay: 2s;
+  }
+  .delay3 {
+    -webkit-animation-delay: 3s; 
+      animation-delay: 3s;
+  }
+  
+  @-webkit-keyframes slide {
+      0% { opacity:0; transform: translateX(15vw); }	
+     20% { opacity:1; transform: translateX(9vw); }	
+     80% { opacity:1; transform: translateX(-9vw); }	
+    100% { opacity:0; transform: translateX(-15vw); }	
+  }
+  @keyframes slide {
+      0% { opacity:0; transform: translateX(15vw); }	
+     20% { opacity:1; transform: translateX(9vw); }	
+     80% { opacity:1; transform: translateX(-9vw); }	
+    100% { opacity:0; transform: translateX(-15vw); }	
+  }
+
+  #arrowAnim {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    width: auto;
+  }
+  
+  .arrow {
+    width: 30px;
+    height: 30px;
+    border: 15px solid;
+    border-color: white transparent transparent white;
+    transform: rotate(-45deg);
+  }
+  
+  
+  .arrowSliding {
+    position: relative;
+    -webkit-animation: slide 4s linear infinite; 
+            animation: slide 4s linear infinite;
+  }
+  
+  .delay1 {
+    -webkit-animation-delay: 1s; 
+      animation-delay: 1s;
+  }
+  .delay2 {
+    -webkit-animation-delay: 2s; 
+      animation-delay: 2s;
+  }
+  .delay3 {
+    -webkit-animation-delay: 3s; 
+      animation-delay: 3s;
+  }
+  
+  @-webkit-keyframes slide {
+      0% { opacity:0; transform: translateX(15vw); }	
+     20% { opacity:1; transform: translateX(9vw); }	
+     80% { opacity:1; transform: translateX(-9vw); }	
+    100% { opacity:0; transform: translateX(-15vw); }	
+  }
+  @keyframes slide {
+      0% { opacity:0; transform: translateX(15vw); }	
+     20% { opacity:1; transform: translateX(9vw); }	
+     80% { opacity:1; transform: translateX(-9vw); }	
+    100% { opacity:0; transform: translateX(-15vw); }	
   }

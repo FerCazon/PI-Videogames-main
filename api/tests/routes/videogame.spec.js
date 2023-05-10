@@ -7,6 +7,8 @@ const { Videogame, conn } = require('../../src/db.js');
 const agent = session(app);
 const videogame = {
   name: 'Super Mario Bros',
+  description: 'This is a description',
+  platforms: ['platform1', 'platform2'],
 };
 
 describe('Videogame routes', () => {
@@ -14,11 +16,24 @@ describe('Videogame routes', () => {
   .catch((err) => {
     console.error('Unable to connect to the database:', err);
   }));
-  beforeEach(() => Videogame.sync({ force: true })
-    .then(() => Videogame.create(videogame)));
-  describe('GET /videogames', () => {
-    it('should get 200', () =>
-      agent.get('/videogames').expect(200)
-    );
+  let createdGame;
+  beforeEach(async () => {
+    await Videogame.sync({ force: true });
+    createdGame = await Videogame.create(videogame);
+  });
+  describe('GET /games/:id', () => {
+    it('should get 200', (done) => {
+      agent.get(`/games/${createdGame.id}`).expect(200).end(done);
+    });
+    it('should return the correct videogame', (done) => {
+      agent.get(`/games/${createdGame.id}`)
+        .then((res) => {
+          expect(res.body.name).to.equal(videogame.name);
+          expect(res.body.description).to.equal(videogame.description);
+          expect(res.body.platforms).to.eql(videogame.platforms);
+          done();
+        })
+        .catch((err) => done(err));
+    });
   });
 });

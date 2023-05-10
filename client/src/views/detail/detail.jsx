@@ -1,13 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import "./detail.css";
 
 function Detail() {
   const { id } = useParams();
   const [game, setGame] = useState(null);
+  const history = useHistory()
 
   const [genres, setGenres] = useState([]);
   const [platforms, setPlatforms] = useState([]);
+
+
+  const handleBackClick = () => {
+    history.goBack();
+  };
 
   useEffect(() => {
     fetch(`http://localhost:3001/games/${id}`)
@@ -45,6 +51,21 @@ function Detail() {
   return (
     <div>
       {game ? (
+        <>
+        <div id="arrowAnim" onClick={handleBackClick}>
+          <div class="arrowSliding">
+            <div class="arrow"></div>
+          </div>
+          <div class="arrowSliding delay1">
+            <div class="arrow"></div>
+          </div>
+          <div class="arrowSliding delay2">
+            <div class="arrow"></div>
+          </div>
+          <div class="arrowSliding delay3">
+            <div class="arrow"></div>
+          </div>
+        </div>
         <div className="game-detail">
           <h2>{game.name}</h2>
           <img
@@ -64,6 +85,7 @@ function Detail() {
           </p>
           <p>Genres: {genres.map((genre) => genre.name || genre).join(", ")}</p>
         </div>
+        </>
       ) : (
         <p>Loading...</p>
       )}
